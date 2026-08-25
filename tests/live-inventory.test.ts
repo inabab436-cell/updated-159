@@ -86,11 +86,11 @@ describe("unresolvable references never mean unavailable", () => {
 });
 
 describe("tolerant product wording", () => {
-  it("understands a misspelled/dialect word (هادي → هودي)", () => {
+  it("does not force a short unclear word (هادي) onto هودي", () => {
     const r = buildLiveInventoryResult(products, { product_name: "هادي" });
-    expect(r.resolved).toBe(true);
-    expect(r.matched).toBe(1);
-    expect(r.products[0]!.product_id).toBe("p1");
+    expect(r.resolved).toBe(false);
+    expect(r.matched).toBe(2);
+    expect(r.rule).toContain("ask him one short natural question");
   });
 
   it("understands a typo in a latin/arabic word (تيشيرت → تيشرت)", () => {

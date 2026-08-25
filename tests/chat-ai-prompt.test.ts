@@ -69,6 +69,14 @@ describe("buildSystemPrompt", () => {
     expect(prompt).toContain("that approval remains valid");
     expect(prompt).toContain('repeat "تمام"');
   });
+
+  it("asks for clarification without forcing هادي onto هودي or suggesting alternatives", () => {
+    const prompt = buildSystemPrompt();
+    expect(prompt).toContain("مش فاهم قصد حضرتك، ممكن توضيح أكتر؟");
+    expect(prompt).not.toContain("هادي/هودي");
+    expect(prompt).not.toContain("mention the closest two real pieces");
+    expect(prompt).not.toContain("تقصد الهودي؟");
+  });
 });
 
 describe("buildHistoryForModel", () => {

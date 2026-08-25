@@ -61,6 +61,8 @@ describe("live inventory tool", () => {
     expect(source).toContain('fnName === "check_live_inventory"');
     expect(source).toContain("buildLiveInventoryResult");
     expect(source).toContain("existingOrderAdditionCapacity: existingOrderAdditionCapacityBlock");
+    expect(source).toContain("CURRENT-MESSAGE INTENT GATE");
+    expect(source).toContain("reply with one clarification question only");
   });
 });
 

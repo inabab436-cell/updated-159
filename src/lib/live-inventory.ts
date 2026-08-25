@@ -49,15 +49,6 @@ export interface LiveInventoryQuery {
   product_name?: string | null;
 }
 
-/**
- * Arabic "skeleton": drop the long vowels (ا و ي) that carry the dialectal /
- * misspelling difference. "هادي" and "هودي" both collapse to "هد", so the
- * customer's wording no longer has to be spelled the way the merchant typed it.
- */
-function skeleton(value: string): string {
-  return value.replace(/[اوي]/g, "");
-}
-
 /** Levenshtein distance, capped for short strings. */
 function distance(a: string, b: string): number {
   if (a === b) return 0;
@@ -84,11 +75,10 @@ function fuzzyHit(nameWord: string, keyWord: string): boolean {
   if (!nameWord || !keyWord) return false;
   if (nameWord === keyWord) return true;
   if (nameWord.includes(keyWord) || keyWord.includes(nameWord)) return true;
-  const sa = skeleton(nameWord);
-  const sb = skeleton(keyWord);
-  if (sa.length >= 2 && sa === sb) return true;
-  const tolerance = Math.min(nameWord.length, keyWord.length) >= 5 ? 2 : 1;
-  return distance(nameWord, keyWord) <= tolerance;
+  // A short unknown word is too ambiguous to force onto a catalogue item.
+  // Return no match so the agent asks what the customer means instead.
+  if (Math.min(nameWord.length, keyWord.length) < 5) return false;
+  return distance(nameWord, keyWord) <= 2;
 }
 
 function words(value: unknown): string[] {
